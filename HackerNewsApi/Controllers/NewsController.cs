@@ -10,19 +10,25 @@ namespace HackerNewsApi.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
+        private readonly NewsService newsService;
+
+        public NewsController(NewsService newsService)
+        {
+            this.newsService = newsService;
+        }
+
         // GET api/values
         [HttpGet("item/{id}.json")]
-        public ActionResult<IEnumerable<string>> GetStory( string id )
+        public Task<Story> GetStory(string id)
         {
-            
-            return new string[] { "12345", id };
+            return newsService.GetStory(id);
         }
 
         // GET api/values
         [HttpGet("topstories.json")]
-        public ActionResult<IEnumerable<string>> GetTopStories()
+        public Task<IEnumerable<string>> GetTopStories()
         {
-            return new string[] { "value1", "value2" };
+            return newsService.GetTopStories();
         }
     }
 }
