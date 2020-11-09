@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace HackerNewsApi.Controllers
 {
-    public class NewsService
+    public class NewsService : INewsService
     {
         private HttpClient httpClient;
 
@@ -29,5 +29,11 @@ namespace HackerNewsApi.Controllers
             var json = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<Story>(json);
         }
+    }
+
+    public interface INewsService
+    {
+        Task<IEnumerable<string>> GetTopStories();
+        Task<Story> GetStory(string id);
     }
 }

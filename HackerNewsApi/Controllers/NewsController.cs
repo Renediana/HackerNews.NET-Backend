@@ -10,9 +10,9 @@ namespace HackerNewsApi.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
-        private readonly NewsService newsService;
+        private readonly INewsService newsService;
 
-        public NewsController(NewsService newsService)
+        public NewsController(INewsService newsService)
         {
             this.newsService = newsService;
         }
