@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HackerNewsApi.Controllers;
+using LettuceEncrypt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,10 +28,18 @@ namespace HackerNewsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSingleton<NewsService>();
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:4200").AllowCredentials()));
+            services.AddControllers();
+
             services.AddHttpClient<NewsService>();
+            //services.AddSingleton<NewsService>();
+
             services.AddSingleton<INewsService, CachingNewsService>();
+            services
+                .AddLettuceEncrypt()
+                .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");
+
+
 
         }
 
@@ -46,8 +56,25 @@ namespace HackerNewsApi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseRouting();
+            app.UseCors();
+
+            //app.UseHttpsRedirection();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            app.Use(async (context, next) =>
+            {
+                var hasCookie = context.Request.Cookies.ContainsKey("voterID");
+                if (!hasCookie)
+                {
+                    context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString());
+                }
+                await next.Invoke();
+
+            });
         }
     }
 }

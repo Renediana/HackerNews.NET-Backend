@@ -19,14 +19,14 @@ namespace HackerNewsApi.Controllers
 
         // GET api/values
         [HttpGet("item/{id}.json")]
-        public Task<Story> GetStory(string id)
+        public Task<Story> GetStory(int id)
         {
             return newsService.GetStory(id);
         }
 
         // GET api/values
         [HttpGet("topstories.json")]
-        public Task<IEnumerable<string>> GetTopStories()
+        public Task<IEnumerable<int>> GetTopStories()
         {
             return newsService.GetTopStories();
         }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace HackerNewsApi
@@ -14,11 +16,17 @@ namespace HackerNewsApi
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host
+                .CreateDefaultBuilder(args)
+                .ConfigureWebHost(builder => builder.UseKestrel(k =>
+                {
+                    k.Listen(IPAddress.Any, 5000);
+                    k.Listen(IPAddress.Any, 5001, o => o.UseHttps(h => h.UseLettuceEncrypt(k.ApplicationServices)));
+                })
+               .UseStartup<Startup>());
     }
 }

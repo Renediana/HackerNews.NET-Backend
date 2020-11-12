@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace HackerNewsApi.Controllers
 {
@@ -16,10 +15,10 @@ namespace HackerNewsApi.Controllers
             this.newsClient = newsClient;
         }
 
-        private List<string> topstories = new List<string>();
-        private Dictionary<string, Story> stories = new Dictionary<string, Story>();
+        private List<int> topstories = new List<int>();
+        private Dictionary<int, Story> stories = new Dictionary<int, Story>();
 
-        public async Task<IEnumerable<string>> GetTopStories()
+        public async Task<IEnumerable<int>> GetTopStories()
         {
             if (topstories.Count == 0)
             {
@@ -30,7 +29,7 @@ namespace HackerNewsApi.Controllers
             return topstories;
         }
 
-        public async Task<Story> GetStory(string id)
+        public async Task<Story> GetStory(int id)
         {
             if (!stories.ContainsKey(id))
             {

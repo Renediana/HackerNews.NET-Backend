@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace HackerNewsApi.Controllers
 {
@@ -16,24 +17,22 @@ namespace HackerNewsApi.Controllers
             this.httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<string>> GetTopStories()
+        public async Task<IEnumerable<int>> GetTopStories()
         {
-            var response = await httpClient.GetAsync("https://hacker-news.firebaseio.com/v0/topstories.json");
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<string>>(json);
+            return await httpClient.GetFromJsonAsync<IEnumerable<int>>("https://hacker-news.firebaseio.com/v0/topstories.json");
         }
 
-        public async Task<Story> GetStory(string id)
+        public async Task<Story> GetStory(int id)
         {
-            var response = await httpClient.GetAsync($"https://hacker-news.firebaseio.com/v0/item/{id}.json");
-            var json = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Story>(json);
+            return await httpClient.GetFromJsonAsync<Story>($"https://hacker-news.firebaseio.com/v0/item/{id}.json");
         }
+
+
     }
 
     public interface INewsService
     {
-        Task<IEnumerable<string>> GetTopStories();
-        Task<Story> GetStory(string id);
+        Task<IEnumerable<int>> GetTopStories();
+        Task<Story> GetStory(int id);
     }
 }
