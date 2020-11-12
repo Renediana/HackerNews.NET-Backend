@@ -28,13 +28,15 @@ namespace HackerNewsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:4200").AllowCredentials()));
-            services.AddControllers();
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://bonenga.ddns.net:4200").AllowCredentials().AllowAnyHeader()));
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             services.AddHttpClient<NewsService>();
+            services.AddHttpContextAccessor();
             //services.AddSingleton<NewsService>();
 
             services.AddSingleton<INewsService, CachingNewsService>();
+            services.AddSingleton<IVotesService, VotesService>();
             services
                 .AddLettuceEncrypt()
                 .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");
@@ -56,6 +58,21 @@ namespace HackerNewsApi
                 app.UseHsts();
             }
 
+            app.Use(async (context, next) =>
+            {
+                var hasCookie = context.Request.Cookies.ContainsKey("voterID");
+                if (!hasCookie)
+                {
+                    context.Response.OnStarting(() =>
+                    {
+                        context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString());
+                        return Task.CompletedTask;
+                    });
+                }
+                await next.Invoke();
+
+            });
+
             app.UseRouting();
             app.UseCors();
 
@@ -65,16 +82,7 @@ namespace HackerNewsApi
                 endpoints.MapControllers();
             });
 
-            app.Use(async (context, next) =>
-            {
-                var hasCookie = context.Request.Cookies.ContainsKey("voterID");
-                if (!hasCookie)
-                {
-                    context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString());
-                }
-                await next.Invoke();
 
-            });
         }
     }
 }
