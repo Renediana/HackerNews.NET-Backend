@@ -28,7 +28,7 @@ namespace HackerNewsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://bonenga.ddns.net:4200").AllowCredentials().AllowAnyHeader()));
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://bonenga.ddns.net:4200").AllowCredentials().AllowAnyHeader().AllowAnyMethod()));
             services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             services.AddHttpClient<NewsService>();
