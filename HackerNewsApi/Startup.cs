@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace HackerNewsApi
 {
@@ -65,7 +66,7 @@ namespace HackerNewsApi
                 {
                     context.Response.OnStarting(() =>
                     {
-                        context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString());
+                        context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString(), new CookieOptions() { SameSiteMode.None });
                         return Task.CompletedTask;
                     });
                 }
