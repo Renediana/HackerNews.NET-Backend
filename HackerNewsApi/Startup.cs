@@ -37,9 +37,9 @@ namespace HackerNewsApi
 
             services.AddSingleton<INewsService, CachingNewsService>();
             services.AddSingleton<IVotesService, VotesService>();
-            services
+            /*services
                 .AddLettuceEncrypt()
-                .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");
+                .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");*/
 
 
 
