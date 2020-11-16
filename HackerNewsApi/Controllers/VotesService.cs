@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Concurrent;
 
 namespace HackerNewsApi.Controllers
 {
@@ -18,7 +19,7 @@ namespace HackerNewsApi.Controllers
 
     public class VotesService : IVotesService
     {
-        Dictionary<int, Dictionary<string, int>> votes = new Dictionary<int, Dictionary<string, int>>();
+        ConcurrentDictionary<int, ConcurrentDictionary<string, int>> votes = new ConcurrentDictionary<int, ConcurrentDictionary<string, int>>();
         public void UpVote(string voterID, int id)
         {
             var storyVotes = GetStoryVotes(id);
@@ -37,18 +38,14 @@ namespace HackerNewsApi.Controllers
             {
                 return;
             }
-            storyVotes.Remove(voterID);
+            storyVotes.Remove(voterID, out var _);
         }
 
-        private Dictionary<string, int> GetStoryVotes(int id)
+        private ConcurrentDictionary<string, int> GetStoryVotes(int id)
         {
-            var hasVotes = votes.ContainsKey(id);
 
-            if (!hasVotes)
-            {
-                votes.Add(id, new Dictionary<string, int>());
-            }
-            return votes[id];
+            return votes.GetOrAdd(id, new ConcurrentDictionary<string, int>());
+
         }
 
         public Dictionary<int, Vote> GetVotes(List<int> ids, string voterID)
