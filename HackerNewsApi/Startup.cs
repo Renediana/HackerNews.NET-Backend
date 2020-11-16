@@ -66,7 +66,7 @@ namespace HackerNewsApi
                 {
                     context.Response.OnStarting(() =>
                     {
-                        context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString(), new CookieOptions() { SameSiteMode.None });
+                        context.Response.Cookies.Append("voterID", Guid.NewGuid().ToString(), new CookieOptions() { SameSite = SameSiteMode.None });
                         return Task.CompletedTask;
                     });
                 }
