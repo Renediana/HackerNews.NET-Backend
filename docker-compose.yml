@@ -8,5 +8,3 @@ services:
     build:
       context: .
       dockerfile: HackerNewsApi/Dockerfile
-    ports:
-      - 5000:5000
