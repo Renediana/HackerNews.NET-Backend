@@ -357,3 +357,9 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,vscode
 
 accounts/
+
+*.pem
+*.key
+*.crt
+*.cer
+*.priv
