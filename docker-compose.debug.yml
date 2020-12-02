@@ -1,17 +1,23 @@
 # Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
 
-version: '3.4'
+version: "3.4"
 
 services:
   hackernewsapi:
-    image: hackernewsapi
+    container_name: hackernews-backend
     build:
       context: .
       dockerfile: HackerNewsApi/Dockerfile
-    ports:
-      - 5000
+
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
     volumes:
       - ~/.vsdbg:/remote_debugger:rw
+
+    networks:
+      - hackernews
+
+networks:
+  hackernews:
+    name: hackernews

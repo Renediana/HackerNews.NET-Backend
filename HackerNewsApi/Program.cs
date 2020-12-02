@@ -25,7 +25,7 @@ namespace HackerNewsApi
                 .ConfigureWebHost(builder => builder.UseKestrel(k =>
                 {
                     k.Listen(IPAddress.Any, 5000);
-                    k.Listen(IPAddress.Any, 5001, o => o.UseHttps(h => h.UseLettuceEncrypt(k.ApplicationServices)));
+                    // k.Listen(IPAddress.Any, 5001, o => o.UseHttps(h => h.UseLettuceEncrypt(k.ApplicationServices)));
                 })
                .UseStartup<Startup>());
     }

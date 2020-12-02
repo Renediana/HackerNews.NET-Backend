@@ -29,18 +29,19 @@ namespace HackerNewsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://bonenga.ddns.net:4200").AllowCredentials().AllowAnyHeader().AllowAnyMethod()));
+            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("https://bonenga.ddns.net").AllowCredentials().AllowAnyHeader().AllowAnyMethod()));
             services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             services.AddHttpClient<NewsService>();
             services.AddHttpContextAccessor();
             //services.AddSingleton<NewsService>();
 
+            services.AddSingleton(Configuration.GetSection("NewsService").Get<NewsServiceOptions>());
             services.AddSingleton<INewsService, CachingNewsService>();
             services.AddSingleton<IVotesService, VotesService>();
-            services
+            /*services
                 .AddLettuceEncrypt()
-                .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");
+                .PersistDataToDirectory(new DirectoryInfo("/home/rene/Documents/HackerNews.NET-Backend"), "Password123");*/
 
 
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,9 +8,14 @@ namespace HackerNewsApi.Controllers
     {
         private NewsService newsClient;
 
-        public CachingNewsService(NewsService newsClient)
+        private DateTime? cachingTime;
+
+        private NewsServiceOptions options;
+
+        public CachingNewsService(NewsService newsClient, NewsServiceOptions options)
         {
             this.newsClient = newsClient;
+            this.options = options;
         }
 
         private List<int> topstories = new List<int>();
@@ -17,13 +23,19 @@ namespace HackerNewsApi.Controllers
 
         public async Task<IEnumerable<int>> GetTopStories()
         {
-            if (topstories.Count == 0)
+            var cacheIsInvalid = !cachingTime.HasValue || DateTime.UtcNow > cachingTime.Value.Add(options.Interval);
+            if (cacheIsInvalid)
             {
-                var response = await newsClient.GetTopStories();
-                topstories.AddRange(response);
+                if (topstories.Count == 0)
+                {
+                    var response = await newsClient.GetTopStories();
+                    topstories.AddRange(response);
 
+                    cachingTime = DateTime.UtcNow;
+                }
             }
             return topstories;
+
         }
 
         public async Task<Story> GetStory(int id)
