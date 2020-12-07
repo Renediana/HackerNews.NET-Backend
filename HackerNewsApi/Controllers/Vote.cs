@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json;
+using System.Net.Http.Json;
 
 namespace HackerNewsApi.Controllers
 {
