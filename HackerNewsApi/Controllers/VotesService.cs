@@ -14,7 +14,10 @@ namespace HackerNewsApi.Controllers
 
     public class VotesService : IVotesService
     {
-        Dictionary<int, Dictionary<string, int>> votes = new Dictionary<int, Dictionary<string, int>>();
+        
+        private Dictionary<int, Dictionary<string, int>> votes = new Dictionary<int, Dictionary<string, int>>();
+        public Dictionary<int, Dictionary<string, int>> Votes => votes;
+
         public void UpVote(string voterID, int id)
         {
             var storyVotes = GetStoryVotes(id);
